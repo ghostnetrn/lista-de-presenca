@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 export default function Home() {
   const [studentName, setStudentName] = useState("");
   const [students, setStudents] = useState([]);
+  const [user, setUser] = useState({ name: "", avatar_url: "" });
 
   function handleAddStudent() {
     const newStudent = {
@@ -18,15 +19,25 @@ export default function Home() {
     setStudents((prevState) => [...prevState, newStudent]);
   }
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    async function fetchData() {
+      const response = await fetch("https://api.github.com/users/ghostnetrn");
+      const { name, avatar_url } = await response.json();
+      setUser({ name, avatar_url });
+    }
+
+    fetchData();
+  }, []);
+
+  const { name, avatar_url } = user;
 
   return (
     <div className="container">
       <header>
         <h1>Lista de Presença</h1>
         <div>
-          <strong>Francisco</strong>
-          <img src="https://github.com/lagoanova.png" alt="Foto de perfil" />
+          <strong>{name}</strong>
+          <img src={avatar_url} alt="Foto de perfil" />
         </div>
       </header>
       <input
